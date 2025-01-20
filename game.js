@@ -186,75 +186,69 @@ function draw_platforms(){
 	}
 }
 
-function loop() {
-    clearCanvas();
-    draw_platforms();
-    player.draw();
-    goal.draw();
+function loop(){
 
-    player.position = "idle";
+	clearCanvas();
+	draw_platforms();
+	player.draw();
+	goal.draw();
 
-    // Jump
-    if (keys[38] || keys[32]) { // Up arrow or Space
-        if (!player.jumping && player.grounded) {
-            player.velY = -player.jumpStrength * 2;
-            player.jumping = true;
-        }
-    }
+	player.position = "idle";
 
-    // Right movement
-    if (keys[39]) { // Right arrow
-        player.position = "right";
-        if (player.velX < player.speed) {
-            player.velX += 0.5; // Gradual acceleration
-        }
-    }
+	if(keys[38] || keys[32]){
+		if(!player.jumping){
+			player.velY = -player.jumpStrength*2;
+			player.jumping = true;
+		}
+	}
 
-    // Left movement
-    if (keys[37]) { // Left arrow
-        player.position = "left";
-        if (player.velX > -player.speed) {
-            player.velX -= 0.5; // Gradual deceleration
-        }
-    }
+	if(keys[39]){
+		player.position = "right";
+		if(player.velX < player.speed){
+			player.velX+=2;
+		}
+	}
 
-    // Apply velocity to position
-    player.x += player.velX;
-    player.y += player.velY;
+	if(keys[37]){
+		player.position = "left";
+		if(player.velX > -player.speed){
+			player.velX-=2;
+		}
+	}
 
-    // Apply friction and gravity
-    player.velX *= friction; // Slow down movement gradually
-    player.velY += gravity;  // Apply gravity
+	player.x += player.velX;
+	player.y += player.velY;
 
-    player.grounded = false;
+	player.velX *= friction;
+	player.velY += gravity;
 
-    // Check for collisions with platforms
-    for (var i = 0; i < platforms.length; i++) {
-        var direction = collisionCheck(player, platforms[i]);
-        if (direction == "left" || direction == "right") {
-            player.velX = 0; // Stop horizontal movement on collision
-        } else if (direction == "bottom") {
-            player.jumping = false;
-            player.grounded = true;
-        } else if (direction == "top") {
-            player.velY *= -1; // Bounce off the top
-        }
-    }
+	player.grounded = false;
+	for(var i = 0; i < platforms.length; i++){
+		var direction = collisionCheck(player, platforms[i]);
 
-    // If grounded, stop vertical movement
-    if (player.grounded) {
-        player.velY = 0;
-    }
+		if(direction == "left" || direction == "right"){
+			player.velX = 0;
+		} else if(direction == "bottom"){
+			player.jumping = false;
+			player.grounded = true;
+		} else if(direction == "top"){
+			player.velY *= -1;
+		}
 
-    // Check for goal collision
-    if (collisionCheck(player, goal)) {
-        complete();
-    }
+	}
 
-    // Continue the game loop if not completed
-    if (!completed) {
-        requestAnimationFrame(loop);
-    }
+	if(player.grounded){
+		player.velY = 0;
+	}
+
+	if(collisionCheck(player, goal)){
+		complete();
+	}
+
+	if(!completed){
+		requestAnimationFrame(loop);
+	}
+
 }
 
 function collisionCheck(character, platform){
