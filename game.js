@@ -2,7 +2,7 @@ var canvas = document.getElementById('game');
 var context = canvas.getContext('2d');
 var gameStarted = false;
 var keys = [];
-var friction = 0.85; // Smoother stopping
+var friction = 0.8; // Smoother stopping
 var gravity = 0.6;  // Slower falling
 var completed = false;
 
@@ -17,13 +17,13 @@ var player = {
     y: canvas.height - 45,
     width: 40,
     height: 40,
-    speed: 2, // Updated for smoother acceleration
+    speed: 2.5, // Updated for smoother acceleration
     velX: 0,
     velY: 0,
     color: "#ff0000",
     jumping: false,
     grounded: false,
-    jumpStrength: 5, // Reduced jump strength for better control
+    jumpStrength: 6, // Reduced jump strength for better control
     position: "idle",
     draw: function() {
         startX = 40;
