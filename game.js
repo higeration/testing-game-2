@@ -23,7 +23,7 @@ var player = {
     color: "#ff0000",
     jumping: false,
     grounded: false,
-    jumpStrength: 3, // Reduced jump strength for better control
+    jumpStrength: 5, // Reduced jump strength for better control
     position: "idle",
     draw: function() {
         startX = 40;
