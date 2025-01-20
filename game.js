@@ -3,7 +3,7 @@ var context = canvas.getContext('2d');
 var gameStarted = false;
 var keys = [];
 var friction = 0.8; // Smoother stopping
-var gravity = 0.6;  // Slower falling
+var gravity = 0.8;  // Slower falling
 var completed = false;
 
 var door_image = new Image();
@@ -23,7 +23,7 @@ var player = {
     color: "#ff0000",
     jumping: false,
     grounded: false,
-    jumpStrength: 6, // Reduced jump strength for better control
+    jumpStrength: 10, // Reduced jump strength for better control
     position: "idle",
     draw: function() {
         startX = 40;
