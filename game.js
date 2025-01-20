@@ -17,13 +17,13 @@ var player = {
 	y: canvas.height - 45,
 	width: 40,
 	height: 40,
-	speed: 5,
+	speed: 2,
 	velX: 0,
 	velY: 0,
 	color: "#ff0000",
 	jumping: false,
 	grounded: false,
-	jumpStrength: 7,
+	jumpStrength: 5,
 	position: "idle",
 	draw: function(){	
 		startX = 40;
