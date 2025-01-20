@@ -2,8 +2,8 @@ var canvas = document.getElementById('game');
 var context = canvas.getContext('2d');
 var gameStarted = false;
 var keys = [];
-var friction = 0.8;
-var gravity = 0.98;
+var friction = 0.85; // Smoother stopping
+var gravity = 0.6;  // Slower falling
 var completed = false;
 
 var door_image = new Image();
@@ -13,27 +13,27 @@ var image = new Image();
 image.src = "character.png";
 
 var player = {
-	x: 5,
-	y: canvas.height - 45,
-	width: 40,
-	height: 40,
-	speed: 2,
-	velX: 0,
-	velY: 0,
-	color: "#ff0000",
-	jumping: false,
-	grounded: false,
-	jumpStrength: 5,
-	position: "idle",
-	draw: function(){	
-		startX = 40;
-		if(this.position == "left"){
-			startX = 0;
-		} else if(this.position == "right"){
-			startX = 80;
-		}
-		context.drawImage(image, startX, 0, 40, 40, this.x, this.y, 40, 40);
-	}
+    x: 5,
+    y: canvas.height - 45,
+    width: 40,
+    height: 40,
+    speed: 2, // Updated for smoother acceleration
+    velX: 0,
+    velY: 0,
+    color: "#ff0000",
+    jumping: false,
+    grounded: false,
+    jumpStrength: 3, // Reduced jump strength for better control
+    position: "idle",
+    draw: function() {
+        startX = 40;
+        if (this.position == "left") {
+            startX = 0;
+        } else if (this.position == "right") {
+            startX = 80;
+        }
+        context.drawImage(image, startX, 0, 40, 40, this.x, this.y, 40, 40);
+    }
 }
 
 var goal = {
@@ -186,69 +186,75 @@ function draw_platforms(){
 	}
 }
 
-function loop(){
+function loop() {
+    clearCanvas();
+    draw_platforms();
+    player.draw();
+    goal.draw();
 
-	clearCanvas();
-	draw_platforms();
-	player.draw();
-	goal.draw();
+    player.position = "idle";
 
-	player.position = "idle";
+    // Jump
+    if (keys[38] || keys[32]) { // Up arrow or Space
+        if (!player.jumping && player.grounded) {
+            player.velY = -player.jumpStrength * 2;
+            player.jumping = true;
+        }
+    }
 
-	if(keys[38] || keys[32]){
-		if(!player.jumping){
-			player.velY = -player.jumpStrength*2;
-			player.jumping = true;
-		}
-	}
+    // Right movement
+    if (keys[39]) { // Right arrow
+        player.position = "right";
+        if (player.velX < player.speed) {
+            player.velX += 0.5; // Gradual acceleration
+        }
+    }
 
-	if(keys[39]){
-		player.position = "right";
-		if(player.velX < player.speed){
-			player.velX+=2;
-		}
-	}
+    // Left movement
+    if (keys[37]) { // Left arrow
+        player.position = "left";
+        if (player.velX > -player.speed) {
+            player.velX -= 0.5; // Gradual deceleration
+        }
+    }
 
-	if(keys[37]){
-		player.position = "left";
-		if(player.velX > -player.speed){
-			player.velX-=2;
-		}
-	}
+    // Apply velocity to position
+    player.x += player.velX;
+    player.y += player.velY;
 
-	player.x += player.velX;
-	player.y += player.velY;
+    // Apply friction and gravity
+    player.velX *= friction; // Slow down movement gradually
+    player.velY += gravity;  // Apply gravity
 
-	player.velX *= friction;
-	player.velY += gravity;
+    player.grounded = false;
 
-	player.grounded = false;
-	for(var i = 0; i < platforms.length; i++){
-		var direction = collisionCheck(player, platforms[i]);
+    // Check for collisions with platforms
+    for (var i = 0; i < platforms.length; i++) {
+        var direction = collisionCheck(player, platforms[i]);
+        if (direction == "left" || direction == "right") {
+            player.velX = 0; // Stop horizontal movement on collision
+        } else if (direction == "bottom") {
+            player.jumping = false;
+            player.grounded = true;
+        } else if (direction == "top") {
+            player.velY *= -1; // Bounce off the top
+        }
+    }
 
-		if(direction == "left" || direction == "right"){
-			player.velX = 0;
-		} else if(direction == "bottom"){
-			player.jumping = false;
-			player.grounded = true;
-		} else if(direction == "top"){
-			player.velY *= -1;
-		}
+    // If grounded, stop vertical movement
+    if (player.grounded) {
+        player.velY = 0;
+    }
 
-	}
+    // Check for goal collision
+    if (collisionCheck(player, goal)) {
+        complete();
+    }
 
-	if(player.grounded){
-		player.velY = 0;
-	}
-
-	if(collisionCheck(player, goal)){
-		complete();
-	}
-
-	if(!completed){
-		requestAnimationFrame(loop);
-	}
-
+    // Continue the game loop if not completed
+    if (!completed) {
+        requestAnimationFrame(loop);
+    }
 }
 
 function collisionCheck(character, platform){
