@@ -2,8 +2,8 @@ var canvas = document.getElementById('game');
 var context = canvas.getContext('2d');
 var gameStarted = false;
 var keys = [];
-var friction = 0.8; // Smoother stopping
-var gravity = 0.8;  // Slower falling
+var friction = 0.8;
+var gravity = 0.98;
 var completed = false;
 
 var door_image = new Image();
@@ -13,27 +13,27 @@ var image = new Image();
 image.src = "character.png";
 
 var player = {
-    x: 5,
-    y: canvas.height - 45,
-    width: 40,
-    height: 40,
-    speed: 2.5, // Updated for smoother acceleration
-    velX: 0,
-    velY: 0,
-    color: "#ff0000",
-    jumping: false,
-    grounded: false,
-    jumpStrength: 3.5, // Reduced jump strength for better control
-    position: "idle",
-    draw: function() {
-        startX = 40;
-        if (this.position == "left") {
-            startX = 0;
-        } else if (this.position == "right") {
-            startX = 80;
-        }
-        context.drawImage(image, startX, 0, 40, 40, this.x, this.y, 40, 40);
-    }
+	x: 5,
+	y: canvas.height - 45,
+	width: 40,
+	height: 40,
+	speed: 5,
+	velX: 0,
+	velY: 0,
+	color: "#ff0000",
+	jumping: false,
+	grounded: false,
+	jumpStrength: 7,
+	position: "idle",
+	draw: function(){	
+		startX = 40;
+		if(this.position == "left"){
+			startX = 0;
+		} else if(this.position == "right"){
+			startX = 80;
+		}
+		context.drawImage(image, startX, 0, 40, 40, this.x, this.y, 40, 40);
+	}
 }
 
 var goal = {
