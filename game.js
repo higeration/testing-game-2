@@ -137,7 +137,7 @@ function intro_screen(){
 	context.font = "50px Impact";
 	context.fillStyle = "#FFFFFF";
 	context.textAlign = "center";
-	context.fillText("HTML5 Game", canvas.width/2, canvas.height/2);
+	context.fillText("HTML Game", canvas.width/2, canvas.height/2);
 
 	context.font = "20px Arial";
 	context.fillText("Press Enter To Start", canvas.width/2, canvas.height/2 + 50);
